@@ -26,9 +26,9 @@ class ChatScreen extends GetView<ChatController> {
         return ListView.builder(
           padding: EdgeInsets.only(bottom: 80),
           controller: controller.scrollController,
-          itemCount: user.messages.length,
+          itemCount: user.messages!.length,
           itemBuilder: (context, index) {
-            Message message = user.messages[index];
+            Message message = user.messages![index];
             return message.senderId == controller.user.id
                 ? MyMessageContainer(message: message)
                 : YourMessageContainer(message: message);

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_private_chat/models/message.dart';
 import 'package:flutter_private_chat/models/user.dart';
+import 'package:flutter_private_chat/screens/connect_screen.dart';
+import 'package:flutter_private_chat/screens/users_screen.dart';
+import 'package:flutter_private_chat/services/db_services.dart';
 import 'package:flutter_private_chat/services/socket_service.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
@@ -14,20 +17,17 @@ class ChatController extends GetxController {
   GlobalKey<FormState> chatFormKey = new GlobalKey<FormState>();
   ScrollController scrollController = new ScrollController();
   SocketService socketService = Get.find();
+  DBService dbService = Get.find();
   Uuid uuid = new Uuid();
 
   TextEditingController messageTextEditingController =
       new TextEditingController();
 
-  @override
-  onInit() {
-    user.id = uuid.v4();
-    super.onInit();
-  }
-
   connectToSocket() {
-    if (connectFormKey.currentState!.validate())
+    if (connectFormKey.currentState!.validate()) {
+      user.id = uuid.v4();
       socketService.connectSocket(user);
+    }
   }
 
   sendMessage(String receiverId) {
@@ -42,6 +42,7 @@ class ChatController extends GetxController {
       int index = onlineUsers.indexWhere((element) => element.id == receiverId);
       if (index != -1) {
         onlineUsers[index].messages.add(messageModel);
+        dbService.addChatUser(onlineUsers[index]);
         update();
       }
       messageTextEditingController.clear();

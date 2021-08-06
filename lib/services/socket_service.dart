@@ -3,6 +3,7 @@ import 'package:flutter_private_chat/models/message.dart';
 import 'package:flutter_private_chat/models/user.dart';
 import 'package:flutter_private_chat/screens/connect_screen.dart';
 import 'package:flutter_private_chat/screens/users_screen.dart';
+import 'package:flutter_private_chat/services/db_services.dart';
 import 'package:get/get.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:get/get_state_manager/get_state_manager.dart';
@@ -11,18 +12,21 @@ import 'dart:convert';
 
 class SocketService extends GetxService {
   Uuid uuid = Uuid();
+  DBService dbService = Get.find();
   IO.Socket? socket;
-  // String? userId;
+
   void connectSocket(User user) {
-    // userId = uuid.v4();
     socket = IO.io(
-        "Your server address",
+        'Your server address', // Change here
         IO.OptionBuilder()
             .setTransports(['websocket']) // for Flutter or Dart VM
             .setExtraHeaders({'user': json.encode(user.toJson())}) // optional
             .build());
     socket!.onConnect((_) {
       print('connected');
+      ChatController chatController = Get.find();
+      chatController.user = user;
+      dbService.addUser(user);
       Get.off(UsersScreen());
     });
     socket!.onDisconnect((_) {
@@ -43,6 +47,7 @@ class SocketService extends GetxService {
 
       if (index != -1) {
         chatController.onlineUsers[index].messages.add(message);
+        dbService.addChatUser(chatController.onlineUsers[index]);
         chatController.update();
         chatController.scrollToEnd();
       }
@@ -55,7 +60,13 @@ class SocketService extends GetxService {
       for (var userJson in users) {
         User user = User.fromJson(userJson);
         if (user.id != chatController.user.id) {
-          chatController.onlineUsers.add(user);
+          User? dbUser = dbService.getChatUser(user.id!);
+          if (dbUser != null) {
+            chatController.onlineUsers.add(dbUser);
+          } else {
+            chatController.onlineUsers.add(user);
+            dbService.addChatUser(user);
+          }
         }
       }
       chatController.update();
