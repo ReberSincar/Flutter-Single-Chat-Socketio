@@ -84,24 +84,33 @@ class ChatScreen extends GetView<ChatController> {
 
   AppBar buildAppBar() {
     return AppBar(
-      leadingWidth: 20.0,
+      leadingWidth: 0.0,
       automaticallyImplyLeading: false,
-      leading: Padding(
-        padding: EdgeInsets.only(left: 10.0),
-        child: InkWell(
-          onTap: () => Get.back(),
-          child: Icon(Icons.arrow_back_ios),
-        ),
-      ),
+      // leading: InkWell(
+      //   onTap: () => Get.back(),
+      //   child: Padding(
+      //     padding: EdgeInsets.only(left: 10.0),
+      //     child: Icon(Icons.arrow_back_ios),
+      //   ),
+      // ),
       title: Row(
         children: [
-          CircleAvatar(
-            radius: 25,
-            child: Text(
-              "${user.name![0]}${user.surname![0]}",
-              style: TextStyle(color: Colors.teal, fontSize: 20),
+          InkWell(
+            borderRadius: BorderRadius.circular(25),
+            onTap: () => Get.back(),
+            child: Row(
+              children: [
+                Icon(Icons.arrow_back_ios),
+                CircleAvatar(
+                  radius: 25,
+                  child: Text(
+                    "${user.name![0]}${user.surname![0]}",
+                    style: TextStyle(color: Colors.teal, fontSize: 20),
+                  ),
+                  backgroundColor: Colors.white,
+                ),
+              ],
             ),
-            backgroundColor: Colors.white,
           ),
           SizedBox(width: 10),
           Text(
