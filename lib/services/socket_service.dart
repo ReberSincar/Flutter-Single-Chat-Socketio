@@ -46,10 +46,9 @@ class SocketService extends GetxService {
       });
 
       if (index != -1) {
-        chatController.onlineUsers[index].messages.add(message);
+        chatController.onlineUsers[index].messages.insert(0, message);
         dbService.addChatUser(chatController.onlineUsers[index]);
         chatController.update();
-        chatController.scrollToEnd();
       }
     });
 

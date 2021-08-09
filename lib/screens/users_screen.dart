@@ -36,7 +36,7 @@ class UsersScreen extends GetView<ChatController> {
                   User user = controller.onlineUsers[index];
                   return InkWell(
                     onTap: () {
-                      Get.to(ChatScreen(user: user));
+                      Get.to(() => ChatScreen(user: user));
                     },
                     child: Container(
                       width: Get.width,

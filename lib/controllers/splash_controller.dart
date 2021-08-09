@@ -20,7 +20,7 @@ class SplashController extends GetxController {
     if (dbUser != null) {
       socketService.connectSocket(dbUser);
     } else {
-      Get.to(ConnectScreen());
+      Get.to(() => ConnectScreen());
     }
     super.onReady();
   }

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_private_chat/models/message.dart';
 
@@ -14,18 +16,28 @@ class MyMessageContainer extends StatelessWidget {
       alignment: Alignment.topRight,
       child: Container(
         margin: EdgeInsets.only(top: 10, right: 10),
-        padding: EdgeInsets.all(10),
+        padding: EdgeInsets.all(message.messageType == 0 ? 10 : 4),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
           color: Colors.teal,
         ),
-        child: Text(
-          message.message!,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 16,
-          ),
-        ),
+        child: message.messageType == 0
+            ? Text(
+                message.message!,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                ),
+              )
+            : ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.memory(
+                  message.image!,
+                  width: 200,
+                  height: 200,
+                  fit: BoxFit.cover,
+                ),
+              ),
       ),
     );
   }

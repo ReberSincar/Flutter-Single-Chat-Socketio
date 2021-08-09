@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_private_chat/controllers/chat_controller.dart';
-import 'package:flutter_private_chat/screens/connect_screen.dart';
 import 'package:flutter_private_chat/screens/splash_screen.dart';
 import 'package:flutter_private_chat/services/db_services.dart';
 import 'package:flutter_private_chat/services/socket_service.dart';
