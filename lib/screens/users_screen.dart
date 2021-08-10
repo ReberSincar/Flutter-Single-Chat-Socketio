@@ -85,7 +85,11 @@ class UsersScreen extends GetView<ChatController> {
                                   ),
                                   SizedBox(width: 2),
                                   Text(
-                                    user.isOnline! ? "Online" : "Offline",
+                                    user.isTyping
+                                        ? "Typing..."
+                                        : user.isOnline!
+                                            ? "Online"
+                                            : "Offline",
                                     style: TextStyle(fontSize: 12),
                                   ),
                                 ],
