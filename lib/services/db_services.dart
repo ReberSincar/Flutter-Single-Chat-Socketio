@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter_private_chat/models/message.dart';
 import 'package:flutter_private_chat/models/user.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get_storage/get_storage.dart';
@@ -19,16 +20,12 @@ class DBService extends GetxService {
     return null;
   }
 
-  addChatUser(User chatUser) async {
-    String json = jsonEncode(chatUser.toJson());
-    await storage.write('user_${chatUser.id}', json);
+  addChatUserMessages(User chatUser) async {
+    await storage.write('messages_${chatUser.id}', chatUser.toJsonMessages());
   }
 
-  User? getChatUser(String userId) {
-    var user = storage.read('user_$userId');
-    if (user != null) {
-      return User.fromJson(json.decode(user));
-    }
-    return null;
+  getChatUserMessages(String userId) {
+    var messages = storage.read('messages_$userId') ?? [];
+    return messages.map((e) => Message.fromJson(e)).toList();
   }
 }

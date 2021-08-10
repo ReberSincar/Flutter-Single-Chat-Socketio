@@ -1,6 +1,5 @@
-import 'dart:convert';
+import 'dart:async';
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_private_chat/models/message.dart';
 import 'package:flutter_private_chat/models/user.dart';
@@ -22,21 +21,41 @@ class ChatController extends GetxController {
   DBService dbService = Get.find();
   Uuid uuid = new Uuid();
 
-  FocusNode focusNode = new FocusNode();
+  String? chattingUserId;
+
+  Timer? timer;
 
   TextEditingController messageTextEditingController =
       new TextEditingController();
 
+  @override
+  onInit() {
+    messageTextEditingController.addListener(() {
+      if (timer != null) {
+        timer!.cancel();
+      }
+      socketService.sendTypingStatus(user.id!, chattingUserId!, true);
+      timer = new Timer(Duration(seconds: 1), () {
+        socketService.sendTypingStatus(user.id!, chattingUserId!, false);
+      });
+    });
+    super.onInit();
+  }
+
   connectToSocket() {
     if (connectFormKey.currentState!.validate()) {
-      user.id = uuid.v4();
       socketService.connectSocket(user);
     }
+  }
+
+  addUserId(String userId) {
+    user.id = userId;
   }
 
   sendMessage(String receiverId) {
     if (messageTextEditingController.text.isNotEmpty) {
       Message messageModel = new Message(
+          id: uuid.v4(),
           message: messageTextEditingController.text,
           messageType: 0,
           receiverId: receiverId,
@@ -46,7 +65,7 @@ class ChatController extends GetxController {
       int index = onlineUsers.indexWhere((element) => element.id == receiverId);
       if (index != -1) {
         onlineUsers[index].messages.insert(0, messageModel);
-        dbService.addChatUser(onlineUsers[index]);
+        dbService.addChatUserMessages(onlineUsers[index]);
         update();
       }
       messageTextEditingController.clear();
@@ -57,6 +76,7 @@ class ChatController extends GetxController {
     Uint8List? base64 = await getImage(isGallery);
     if (base64 != null) {
       Message messageModel = new Message(
+          id: uuid.v4(),
           image: base64,
           message: "",
           messageType: 1,
@@ -68,7 +88,7 @@ class ChatController extends GetxController {
       int index = onlineUsers.indexWhere((element) => element.id == receiverId);
       if (index != -1) {
         onlineUsers[index].messages.insert(0, messageModel);
-        dbService.addChatUser(onlineUsers[index]);
+        dbService.addChatUserMessages(onlineUsers[index]);
         update();
       }
       messageTextEditingController.clear();

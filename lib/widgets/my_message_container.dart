@@ -1,18 +1,20 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_private_chat/controllers/chat_controller.dart';
 import 'package:flutter_private_chat/models/message.dart';
 import 'package:get/get.dart';
 
-class MyMessageContainer extends StatelessWidget {
+class MyMessageContainer extends GetView<ChatController> {
   const MyMessageContainer({
     Key? key,
-    required this.message,
+    required this.messageIndex,
+    required this.userIndex,
   }) : super(key: key);
-  final Message message;
+  final int messageIndex;
+  final int userIndex;
 
   @override
   Widget build(BuildContext context) {
+    Message message = controller.onlineUsers[userIndex].messages[messageIndex];
     return Align(
       alignment: Alignment.topRight,
       child: InkWell(
@@ -30,23 +32,68 @@ class MyMessageContainer extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
             color: Colors.teal,
           ),
-          child: message.messageType == 0
-              ? Text(
-                  message.message!,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              message.messageType == 0
+                  ? Text(
+                      message.message!,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                      ),
+                    )
+                  : ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.memory(
+                        message.image!,
+                        width: 200,
+                        height: 200,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    "${message.createdAt!.hour}:${message.createdAt!.minute}",
+                    style: TextStyle(
+                      color: Colors.grey.shade800,
+                      fontSize: 12,
+                    ),
                   ),
-                )
-              : ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: Image.memory(
-                    message.image!,
-                    width: 200,
-                    height: 200,
-                    fit: BoxFit.cover,
+                  Visibility(
+                    visible: message.isSend || message.isRead,
+                    child: Row(
+                      children: [
+                        SizedBox(width: 2.5),
+                        Align(
+                          widthFactor: 0.5,
+                          child: Icon(
+                            Icons.check,
+                            size: 15,
+                            color: Colors.grey.shade800,
+                          ),
+                        ),
+                        Align(
+                          widthFactor: 0.01,
+                          child: Visibility(
+                            visible: message.isRead,
+                            child: Icon(
+                              Icons.check,
+                              size: 15,
+                              color: Colors.grey.shade800,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );
