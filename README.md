@@ -1,5 +1,15 @@
 # Flutter-Single-Chat-Socketio
 
+Flutter Single One to one chat with socket.io
+<ul>
+  <li>Send text message</li>
+  <li>Send image message</li>
+  <li>Online - Offline Status</li>
+  <li>Typing status</li>
+  <li>Message received status</li>
+  <li>Message read status</li>
+</ul>
+
 Server project : https://github.com/ReberSincar/Nodejs-Single-Chat-Socket.io
 
 Add your server address to lib/services/socket_service.dart file.
@@ -36,6 +46,18 @@ Add your server address to lib/services/socket_service.dart file.
     <td>
       <img src="https://user-images.githubusercontent.com/36922746/128867663-f52977d8-dea5-4213-bfe4-643059dd0e54.png" />
     </td>
-   
   </tr>
+  <tr>
+     <td>
+      <img src="https://user-images.githubusercontent.com/36922746/128869450-943eca5f-ad74-42d7-8b7f-c37fa838e039.png" />
+    </td>
+    <td>
+      <img src="https://user-images.githubusercontent.com/36922746/128869647-1f25db22-cc4f-4d0e-80e0-11e3f15a46a2.png" />
+    </td>
+    <td>
+    </td>
+    <td>
+    </td>
+  </tr>
+
 </table>
